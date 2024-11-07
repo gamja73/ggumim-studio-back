@@ -18,6 +18,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,23 +43,26 @@ public class R2Service
         {
             // 파일 형식 검증
             String fileExtension = getFileExtension(file);
+
             if (!SUPPORTED_FORMATS.contains(fileExtension))
             {
                 throw new CustomException(CustomErrorCode.FILE_INVALID_FORMAT);
             }
 
+            String newFileName = generateUniqueFileName(1L, "user");
+
             // 원본 파일 업로드 (origin 디렉토리에 저장)
-            String originalKeyName = "origin/" + file.getOriginalFilename();
+            String originalKeyName = "origin/" + newFileName + "." + fileExtension;
             InputStream originalInputStream = file.getInputStream();
             String originalUrl = uploadFileToR2(originalInputStream, originalKeyName, file.getSize(), file.getContentType());
 
             // Webp 형식으로 변환된 파일 업로드 (img 디렉토리에 저장)
             byte[] webpBytes = convertToWebp(file);
-            String webpKeyName = "img/" + file.getOriginalFilename().replaceFirst("[.][^.]+$", "") + ".webp";
+            String webpKeyName = "img/" + newFileName + ".webp";
             InputStream webpInputStream = new ByteArrayInputStream(webpBytes);
             String webpUrl = uploadFileToR2(webpInputStream, webpKeyName, webpBytes.length, "image/webp");
 
-            // 원본 파일과 변환된 파일의 URL을 반환
+            // 원본 파일과 변환된 파일의 URL 반환
             return new FileResponseDto(file.getOriginalFilename(), originalUrl, webpUrl);
         }
         catch (Exception e)
@@ -65,7 +71,7 @@ public class R2Service
         }
     }
 
-    // 파일을 R2에 업로드하는 함수
+    // 파일을 R2에 업로드
     private String uploadFileToR2(InputStream inputStream, String keyName, long contentLength, String contentType)
     {
         try
@@ -112,5 +118,15 @@ public class R2Service
         }
 
         return "";
+    }
+
+    private String generateUniqueFileName(Long userUID, String userID)
+    {
+        LocalDateTime now = LocalDateTime.now();
+
+        String date = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        Long timestamp = now.toInstant(ZoneOffset.UTC).toEpochMilli();
+
+        return userUID + "-" + userID + "-" + date + "-" + timestamp;
     }
 }
