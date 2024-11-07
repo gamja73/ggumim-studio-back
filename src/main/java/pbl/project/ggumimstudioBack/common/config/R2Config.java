@@ -5,23 +5,28 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@Getter
 @Configuration
 public class R2Config
 {
-    @Value("${cloudflare-r2-config.back.endpointUrl}")
+    @Value("${R2-config.bucketName}")
+    private String r2BucketName;
+
+    @Value("${R2-config.back.endpointUrl}")
     private String r2EndpointUrl;
 
-    @Value("${cloudflare-r2-config.back.region}")
+    @Value("${R2-config.back.region}")
     private String r2Region;
 
-    @Value("${cloudflare-r2-config.back.accessKey}")
+    @Value("${R2-config.back.accessKey}")
     private String r2AccessKey;
 
-    @Value("${cloudflare-r2-config.back.secretKey}")
+    @Value("${R2-config.back.secretKey}")
     private String r2SecretKey;
 
     @Bean
