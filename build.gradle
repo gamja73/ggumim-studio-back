@@ -47,8 +47,23 @@ dependencies {
 
     // Cloudflare R2 (Amazon S3 호환)
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.691'
+
     // WebP 변환을 위한 라이브러리
     implementation 'org.sejda.imageio:webp-imageio:0.1.6'
+
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // Hibernate Validator
+    implementation 'org.hibernate.validator:hibernate-validator:6.2.0.Final'
+
+    // Validation API
+    implementation 'javax.validation:validation-api:2.0.1.Final'
 }
 
 tasks.named('test') {

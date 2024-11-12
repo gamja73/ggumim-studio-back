@@ -1,5 +1,6 @@
 package pbl.project.ggumimstudioBack.common.error;
 
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -7,9 +8,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import pbl.project.ggumimstudioBack.common.dto.response.CommonApiResponse;
 
+import java.util.List;
+
 @RestControllerAdvice
 public class GlobalApiExceptionHandler
 {
+
     // 검증 오류 처리 - MethodArgumentNotValidException
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public CommonApiResponse<CustomErrorResponse> handleValidationException(MethodArgumentNotValidException e)
@@ -25,6 +29,22 @@ public class GlobalApiExceptionHandler
     public CommonApiResponse<CustomErrorResponse> handleNotFoundException(NoHandlerFoundException e)
     {
         CustomErrorResponse customErrorResponse = CustomErrorResponse.of("404", "Resource not found");
+
+        return CommonApiResponse.ERR(customErrorResponse);
+    }
+
+    @ExceptionHandler(javax.validation.ConstraintViolationException.class)
+    public CommonApiResponse<CustomErrorResponse> handleValidationExceptions(ConstraintViolationException ex)
+    {
+        CustomErrorResponse customErrorResponse = CustomErrorResponse.of("400", ex.getMessage());
+
+        return CommonApiResponse.ERR(customErrorResponse);
+    }
+
+    @ExceptionHandler(org.springframework.validation.BindException.class)
+    public CommonApiResponse<CustomErrorResponse> handleMethodArgumentNotValidException(org.springframework.validation.BindException ex)
+    {
+        CustomErrorResponse customErrorResponse = CustomErrorResponse.of("400", ex.getMessage());
 
         return CommonApiResponse.ERR(customErrorResponse);
     }

@@ -7,6 +7,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum CustomErrorCode
 {
+    // JWT, 인증
+    TOKEN_NOT_FOUND("AUTH-001", "토큰을 찾을 수 없습니다."),
+    TOKEN_INFO_NOT_FOUND("AUTH-002", "토큰의 정보를 읽을 수 없습니다."),
+
+    // 회원
+    USER_ID_OR_PASSWORD_ERR("USER-000", "아이디 또는 비밀번호가 일치하지 않습니다."),
     USER_NOT_FOUND("U-001", "회원이 존재하지 않거나 찾을 수 없습니다."),
 
     // 파일
