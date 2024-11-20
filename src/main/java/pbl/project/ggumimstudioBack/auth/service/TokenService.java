@@ -6,26 +6,27 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import pbl.project.ggumimstudioBack.auth.dto.LoginRequestDto;
+import pbl.project.ggumimstudioBack.auth.dto.TokenResponseDto;
 import pbl.project.ggumimstudioBack.auth.jwt.dto.CustomJwtPayload;
-import pbl.project.ggumimstudioBack.auth.jwt.provider.JwtProvider;
 import pbl.project.ggumimstudioBack.common.error.CustomErrorCode;
 import pbl.project.ggumimstudioBack.common.error.CustomException;
+import pbl.project.ggumimstudioBack.common.util.JwtUtil;
 import pbl.project.ggumimstudioBack.user.entity.User;
 import pbl.project.ggumimstudioBack.user.repository.UserRepository;
 
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
 public class TokenService
 {
-
-    private final JwtProvider jwtProvider;
-    private final RedisTemplate<String, String> redisTemplate;
     private final UserRepository userRepository;
+    private final RedisTemplate<String, String> redisTemplate;
+    private static final String REFRESH_TOKEN_PREFIX = "refresh:";
+    private static final String BLACKLIST_PREFIX = "blacklist:";
+    private final JwtUtil jwtUtil;
 
-    public Cookie login(LoginRequestDto loginRequestDto)
+    public TokenResponseDto userLogin(LoginRequestDto loginRequestDto)
     {
         User findUser = userRepository.findByUserID(loginRequestDto.getId());
 
@@ -36,21 +37,17 @@ public class TokenService
 
         // TODO : bcrypt 인코딩 후 비밀번호 확인 로직 추가
 
-        CustomJwtPayload customPayload = new CustomJwtPayload(findUser.getUserUID(), findUser.getUserId());
+        CustomJwtPayload customPayload = new CustomJwtPayload(findUser);
 
-        String accessToken = jwtProvider.createAccessToken(customPayload);
-        String refreshToken = jwtProvider.createRefreshToken(customPayload);
+        String accessToken = jwtUtil.generateToken(customPayload, true);
+        String refreshToken = jwtUtil.generateToken(customPayload, false);
 
-        saveRefreshToken(1L, refreshToken, jwtProvider.getExpiration(refreshToken));
+        storeRefreshToken(customPayload.getUid().toString(), refreshToken, 1000 * 60 * 60 * 24 * 7);
 
-        // ACCESS TOKEN 쿠키 생성
-        Cookie accessTokenCookie = new Cookie("ACCESS_TOKEN", accessToken);
-        accessTokenCookie.setPath("/");
-
-        return accessTokenCookie;
+        return new TokenResponseDto(accessToken, refreshToken);
     }
 
-    public Cookie refreshToken(HttpServletRequest request)
+    public TokenResponseDto refreshToken(HttpServletRequest request)
     {
         Cookie[] cookies = request.getCookies();
 
@@ -59,18 +56,14 @@ public class TokenService
             throw new CustomException(CustomErrorCode.TOKEN_NOT_FOUND);
         }
 
-        Optional<Cookie> accessTokenCookie = java.util.Arrays.stream(cookies)
-                .filter(cookie -> cookie.getName().equals("ACCESS_TOKEN"))
-                .findFirst();
+        Cookie refreshTokenCookie = java.util.Arrays.stream(cookies)
+                .filter(cookie -> cookie.getName().equals("REFRESH_TOKEN"))
+                .findFirst()
+                .orElseThrow(() -> new CustomException(CustomErrorCode.TOKEN_NOT_FOUND));
 
-        if (accessTokenCookie.isEmpty())
-        {
-            throw new CustomException(CustomErrorCode.TOKEN_NOT_FOUND);
-        }
-
-        // ACCESS_TOKEN 에서 회원 UID 가져오기
-        CustomJwtPayload customPayload = jwtProvider.getCustomPayload(accessTokenCookie.get().getValue());
-        Long userUID = customPayload.getUserUID();
+        // REFRESH_TOKEN 에서 회원 UID 가져오기
+        CustomJwtPayload payload = jwtUtil.extractClaims(refreshTokenCookie.getValue());
+        Long userUID = payload.getUid();
 
         String storedRefreshToken = getRefreshToken(userUID);
 
@@ -79,35 +72,66 @@ public class TokenService
             throw new CustomException(CustomErrorCode.TOKEN_NOT_FOUND);
         }
 
-        // 새로운 ACCESS TOKEN 쿠키 생성
-        Cookie newAccessTokenCookie = new Cookie("ACCESS_TOKEN", jwtProvider.createAccessToken(customPayload));
-        newAccessTokenCookie.setPath("/");
+        String accessToken = jwtUtil.generateToken(payload, true);
+        String refreshToken = jwtUtil.generateToken(payload, false);
 
-        return newAccessTokenCookie;
+        storeRefreshToken(userUID.toString(), refreshToken, 1000 * 60 * 60 * 24 * 7);
+
+        return new TokenResponseDto(accessToken, refreshToken);
     }
 
-    private void saveRefreshToken(Long userUID, String refreshToken, long expiration)
+    public boolean userLogout(HttpServletRequest request)
     {
-        redisTemplate.opsForValue().set("refreshToken:" + userUID, refreshToken, expiration, TimeUnit.MILLISECONDS);
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies == null)
+        {
+            throw new CustomException(CustomErrorCode.TOKEN_NOT_FOUND);
+        }
+
+        Cookie refreshTokenCookie = java.util.Arrays.stream(cookies)
+                .filter(cookie -> cookie.getName().equals("REFRESH_TOKEN"))
+                .findFirst()
+                .orElseThrow(() -> new CustomException(CustomErrorCode.TOKEN_NOT_FOUND));
+
+        // REFRESH_TOKEN 에서 회원 UID 가져오기
+        CustomJwtPayload payload = jwtUtil.extractClaims(refreshTokenCookie.getValue());
+        Long userUID = payload.getUid();
+
+        String storedRefreshToken = getRefreshToken(userUID);
+
+        if (storedRefreshToken == null)
+        {
+            throw new CustomException(CustomErrorCode.TOKEN_NOT_FOUND);
+        }
+
+        deleteRefreshToken(userUID);
+
+        return true;
     }
 
-    public String getRefreshToken(Long userUID)
+    private void storeRefreshToken(String userId, String refreshToken, long duration)
     {
-        return redisTemplate.opsForValue().get("refreshToken:" + userUID);
+        redisTemplate.opsForValue().set(REFRESH_TOKEN_PREFIX + userId, refreshToken, duration, TimeUnit.MILLISECONDS);
     }
 
-    public void deleteRefreshToken(Long userUID)
+    private String getRefreshToken(Long userId)
     {
-        redisTemplate.delete("refreshToken:" + userUID);
+        return redisTemplate.opsForValue().get(REFRESH_TOKEN_PREFIX + userId);
     }
 
-    public void addToBlacklist(String token, long expiration)
+    private void deleteRefreshToken(Long userId)
     {
-        redisTemplate.opsForValue().set("blacklist:" + token, "log_out", expiration, TimeUnit.MILLISECONDS);
+        redisTemplate.delete(REFRESH_TOKEN_PREFIX + userId);
     }
 
-    public boolean isTokenBlacklisted(String token)
+    private void blacklistToken(String token, long duration)
     {
-        return redisTemplate.hasKey("blacklist:" + token);
+        redisTemplate.opsForValue().set(BLACKLIST_PREFIX + token, "true", duration, TimeUnit.MILLISECONDS);
+    }
+
+    private boolean isBlacklisted(String token)
+    {
+        return redisTemplate.hasKey(BLACKLIST_PREFIX + token);
     }
 }

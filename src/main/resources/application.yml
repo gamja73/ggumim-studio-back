@@ -9,6 +9,10 @@ spring:
         username: ${db-config.username}
         password: ${db-config.password}
         driver-class-name: org.postgresql.Driver
+    data:
+        redis:
+            url: redis://:${redis-config.password}@${redis-config.host}:${redis-config.port}
+            timeout: 5000ms # 타임아웃 5초
     jpa:
         database: postgresql
         database-platform: org.hibernate.dialect.PostgreSQLDialect

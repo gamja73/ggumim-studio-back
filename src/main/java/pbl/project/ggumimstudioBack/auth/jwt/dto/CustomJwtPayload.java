@@ -1,14 +1,22 @@
 package pbl.project.ggumimstudioBack.auth.jwt.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import pbl.project.ggumimstudioBack.auth.jwt.constants.UserRole;
+import pbl.project.ggumimstudioBack.user.entity.User;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class CustomJwtPayload
 {
-    private Long userUID;
-    private String userId;
+    private Long uid;
+    private String id;
+    private String nickname;
+    private UserRole role;
+
+    public CustomJwtPayload(User user)
+    {
+        this.uid = user.getUserUID();
+        this.id = user.getUserId();
+        this.nickname = user.getNickname();
+        this.role = UserRole.ROLE_USER;
+    }
 }
