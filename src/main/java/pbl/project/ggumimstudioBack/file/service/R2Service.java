@@ -46,7 +46,7 @@ public class R2Service
 
             if (!SUPPORTED_FORMATS.contains(fileExtension))
             {
-                throw new CustomException(CustomErrorCode.FILE_INVALID_FORMAT);
+                throw new CustomException(CustomErrorCode.FILE_INVALID_FORMAT_ERR);
             }
 
             String newFileName = generateUniqueFileName(1L, "user");
@@ -67,7 +67,7 @@ public class R2Service
         }
         catch (Exception e)
         {
-            throw new CustomException(CustomErrorCode.FILE_UPLOAD_FAIL);
+            throw new CustomException(CustomErrorCode.FILE_UPLOAD_FAIL_ERR);
         }
     }
 
@@ -88,7 +88,7 @@ public class R2Service
         }
         catch (Exception e)
         {
-            throw new CustomException(CustomErrorCode.FILE_UPLOAD_FAIL);
+            throw new CustomException(CustomErrorCode.FILE_UPLOAD_FAIL_ERR);
         }
     }
 

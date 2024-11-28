@@ -30,18 +30,29 @@ const getAuthTokens = () => {
 };
 
 // API 호출 함수 (콜백을 사용하여 성공/실패 처리)
-const apiRequest = async (method, url, data = null, successCallback, failCallback) => {
+const apiRequest = async (method, url, data = null, successCallback, failCallback, isFile = false) => {
     const { accessToken, refreshToken } = getAuthTokens();
 
     // Axios 요청 설정
     const config = {
         method: method,
-        url: API_URL + url,
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,  // 액세스 토큰을 헤더에 포함
-            'Content-Type': 'application/json',
-        },
+        url: API_URL + url
     };
+
+    if (isFile)
+    {
+        config.headers = {
+            'Authorization': `Bearer ${accessToken}`,  // 액세스 토큰을 헤더에 포함
+            'Content-Type': "multipart/form-data",
+        }
+    }
+    else
+    {
+        config.headers = {
+            'Authorization': `Bearer ${accessToken}`,  // 액세스 토큰을 헤더에 포함
+            'Content-Type': "application/json",
+        }
+    }
 
     if (method === HttpMethod.POST || method === HttpMethod.PUT)
     {
@@ -107,3 +118,25 @@ const refreshAccessToken = async (refreshToken) => {
         return null;
     }
 };
+
+const fileUpload = async (input) => {
+    const file = input.files[0];
+
+    if (!file)
+    {
+        alert("Please select a file first.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    await apiRequest(
+        HttpMethod.POST,
+        API_URL + '/file',
+        formData,
+        (data) => { return data },
+        (err) => { return err },
+        true
+    )
+}

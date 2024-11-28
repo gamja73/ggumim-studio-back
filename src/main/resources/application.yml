@@ -2,6 +2,9 @@ server:
     port: ${server.port}
 
 spring:
+    devtools:
+        restart:
+            enabled: false
     config:
         import: optional:classpath:env.yml
     datasource:
@@ -9,6 +12,10 @@ spring:
         username: ${db-config.username}
         password: ${db-config.password}
         driver-class-name: org.postgresql.Driver
+    data:
+        redis:
+            url: redis://${redis-config.host}:${redis-config.port}
+            timeout: 5000ms # 타임아웃 5초
     jpa:
         database: postgresql
         database-platform: org.hibernate.dialect.PostgreSQLDialect

@@ -1,12 +1,17 @@
 package pbl.project.ggumimstudioBack.common.util;
 
+import org.springframework.stereotype.Component;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Component
 public class CommonUtil
 {
+    //아이디 형식 정규 표현식
+    private static final String USERID_REGEX = "^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d]{6,18}$";
     // 전화번호 형식 정규 표현식
     private static final String PHONE_REGEX = "^((010)-\\d{4}-\\d{4}|\\+82 10-\\d{4}-\\d{4})$";
     // 이메일 형식 정규 표현식
@@ -41,6 +46,17 @@ public class CommonUtil
         }
 
         return "010-" + phoneNumber.substring(6, 10) + "-" + phoneNumber.substring(11, 15);
+    }
+
+    /**
+     * 아이디 형식 체크
+     *
+     * @param userId - 검사할 아이디
+     * @return 아이디 형식이 맞으면 true, 아니면 false
+     */
+    public boolean isValidUserId(String userId)
+    {
+        return matchesRegex(userId, USERID_REGEX);
     }
 
     /**
@@ -110,7 +126,7 @@ public class CommonUtil
      * @param year - 검사할 연도
      * @return 윤년이면 true, 아니면 false
      */
-    private static boolean isLeapYear(int year)
+    private boolean isLeapYear(int year)
     {
         return (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)); // 윤년 계산
     }
