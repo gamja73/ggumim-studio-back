@@ -18,4 +18,32 @@ public class UserRepositoryImpl implements UserRepositoryCustom
                 .where(user.userId.eq(userID))
                 .fetchFirst();
     }
+
+    @Override
+    public Boolean existsByUserId(String userId)
+    {
+        return queryFactory.selectFrom(user)
+                .where(user.isDeleted.eq(false)
+                        .and(user.userId.eq(userId)))
+                .fetchFirst() != null;
+    }
+
+    @Override
+    public Boolean existsByCallPhone(String callPhone)
+    {
+        return queryFactory.selectFrom(user)
+                .where(user.isDeleted.eq(false)
+                        .and(user.callPhone.eq(callPhone)))
+                .fetchFirst() != null;
+    }
+
+    @Override
+    public Boolean existsByEmail(String email)
+    {
+        return queryFactory.selectFrom(user)
+                .where(user.isDeleted.eq(false)
+                        .and(user.userEmail.eq(email)))
+                .fetchFirst() != null;
+    }
+
 }

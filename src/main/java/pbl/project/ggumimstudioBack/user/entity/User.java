@@ -13,7 +13,7 @@ import pbl.project.ggumimstudioBack.common.entity.BaseEntity;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user")
+@Table(name = "users")
 public class User extends BaseEntity
 {
     @Id

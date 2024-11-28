@@ -6,7 +6,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import pbl.project.ggumimstudioBack.common.dto.response.CommonApiResponse;
 
 @RestControllerAdvice
-public class GlobalApiExceptionHandler
+public class GlobalAuthExceptionHandler
 {
     // 404 Not Found 예외 처리
     @ExceptionHandler(NoHandlerFoundException.class)

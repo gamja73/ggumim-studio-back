@@ -62,9 +62,6 @@ dependencies {
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-    // Hibernate Validator
-    implementation 'org.hibernate.validator:hibernate-validator:6.2.0.Final'
-
     // Validation API
     implementation 'javax.validation:validation-api:2.0.1.Final'
 }
