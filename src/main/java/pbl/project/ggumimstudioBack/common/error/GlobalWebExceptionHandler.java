@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-@ControllerAdvice
+//@ControllerAdvice
 public class GlobalWebExceptionHandler
 {
     // 404 Not Found 예외 처리

@@ -23,7 +23,7 @@ public class FileService
     public FileResponseDto findFile(Long fileUID)
     {
         File responseFile = fileRepository.findById(fileUID)
-                .orElseThrow(() -> new CustomException(CustomErrorCode.FILE_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(CustomErrorCode.FILE_NOT_FOUND_ERR));
 
         return new FileResponseDto(responseFile);
     }
@@ -37,7 +37,7 @@ public class FileService
         // 파일이 비어 있는지 확인
         if (file.isEmpty())
         {
-            throw new CustomException(CustomErrorCode.FILE_IS_NULL);
+            throw new CustomException(CustomErrorCode.FILE_IS_NULL_ERR);
         }
 
         FileResponseDto dto = r2Service.uploadImage(file);
