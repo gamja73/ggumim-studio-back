@@ -42,7 +42,7 @@ public class AuthApiController
         return CommonApiResponse.OK(tokenService.userLogout(request));
     }
 
-    @PostMapping("/sign-up")
+    @PostMapping("/signup")
     public CommonApiResponse<?> signUp(@RequestBody @Valid SignUpRequestDto requestDto)
     {
         return CommonApiResponse.OK(authService.signUpUser(requestDto));

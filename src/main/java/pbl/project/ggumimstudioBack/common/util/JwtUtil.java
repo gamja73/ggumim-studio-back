@@ -12,8 +12,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import pbl.project.ggumimstudioBack.auth.jwt.dto.CustomJwtPayload;
-import pbl.project.ggumimstudioBack.common.error.CustomErrorCode;
-import pbl.project.ggumimstudioBack.common.error.CustomException;
 import pbl.project.ggumimstudioBack.user.repository.UserRepository;
 
 import java.util.*;
