@@ -1,10 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<th:block th:replace="~{/common/commonHead}"></th:block>
+<th:block th:replace="~{/common/commonHeader}"></th:block>
 
-</body>
-</html>
+<!-- main content -->
+<div class="text-center">
+    <div class="error mx-auto" data-text="404">404</div>
+    <p class="lead text-gray-800 mb-5">Page Not Found</p>
+    <a href="/admin">&larr; 대시보드로 돌아가기</a>
+</div>
+
+<th:block th:replace="~{/common/commonFooter}"></th:block>
+<th:block th:replace="~{/common/commonFoot}"></th:block>
