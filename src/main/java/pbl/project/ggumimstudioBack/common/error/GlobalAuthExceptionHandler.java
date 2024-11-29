@@ -29,7 +29,7 @@ public class GlobalAuthExceptionHandler
     @ExceptionHandler(Exception.class)
     public CommonApiResponse<CustomErrorResponse> handleGlobalApiException(Exception ex)
     {
-        CustomErrorResponse customErrorResponse = CustomErrorResponse.of("500", "aaa");
+        CustomErrorResponse customErrorResponse = CustomErrorResponse.of("500", ex.getMessage());
 
         return CommonApiResponse.ERR(customErrorResponse);
     }
