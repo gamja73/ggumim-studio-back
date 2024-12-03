@@ -2,6 +2,8 @@ package pbl.project.ggumimstudioBack.common.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,6 +14,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import pbl.project.ggumimstudioBack.auth.jwt.dto.CustomJwtPayload;
+import pbl.project.ggumimstudioBack.common.error.CustomErrorCode;
+import pbl.project.ggumimstudioBack.common.error.CustomException;
 import pbl.project.ggumimstudioBack.user.repository.UserRepository;
 
 import java.util.*;
@@ -72,9 +76,26 @@ public class JwtUtil
         return true;
     }
 
-    public Long getUidFromToken(String token)
+    public Long getUidFromToken(HttpServletRequest request)
     {
-        return extractClaims(token).getUid();
+        return extractClaims(getAccessTokenCookie(request)).getUid();
+    }
+
+    private String getAccessTokenCookie(HttpServletRequest request)
+    {
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies == null)
+        {
+            throw new CustomException(CustomErrorCode.TOKEN_NOT_FOUND_ERR);
+        }
+
+        Cookie accessTokenCookie = java.util.Arrays.stream(cookies)
+                .filter(cookie -> cookie.getName().equals("accessToken"))
+                .findFirst()
+                .orElseThrow(() -> new CustomException(CustomErrorCode.TOKEN_NOT_FOUND_ERR));
+
+        return accessTokenCookie.getValue();
     }
 
     public Authentication getAuthentication(String token)

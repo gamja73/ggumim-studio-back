@@ -1,0 +1,242 @@
+<th:block th:replace="~{/common/commonHead}"></th:block>
+<head>
+    <link rel="stylesheet" href="/css/quill.snow.css">
+</head>
+<style>
+    .productOptionList {
+        width: 100%;
+        min-height: 16px;
+        margin: 10px auto;
+        display: flex;
+        gap: 10px;
+        padding: 10px;
+        overflow: scroll;
+        border: 1px solid #d1d3e2;
+    }
+
+    .productOptionList .option {
+        font-size: 16px;
+    }
+
+    .productOptionList .option .delete {
+        color: red !important;
+        cursor: pointer;
+    }
+</style>
+<th:block th:replace="~{/common/commonHeader}"></th:block>
+<!-- main content -->
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">상품 등록</h1>
+
+    <div class="card shadow mb-4">
+        <div style="width: 80%; margin: 10px auto">
+            <label for="productName">상품명</label>
+            <input type="text" class="form-control" id="productName">
+
+            <label for="productPrice">상품 가격</label>
+            <input type="number" class="form-control" id="productPrice">
+
+            <label for="productCategory">상품 카테고리</label>
+            <input type="text" class="form-control" id="productCategory">
+
+            <label for="productColorOption">상품 색상 옵션</label>
+            <input type="text" class="form-control" id="productColorOption">
+            <div id="productColorOptionList" class="productOptionList"></div>
+
+            <label for="productSizeOption">상품 사이즈 옵션</label>
+            <input type="text" class="form-control" id="productSizeOption">
+            <div id="productSizeOptionList" class="productOptionList"></div>
+
+            <label for="productDetailEditor" style="margin-top: 10px;">상품 상세</label>
+            <div id="productDetailEditor"></div>
+        </div>
+
+        <button class="btn btn-primary" style="width: max-content; right: 10px;" onclick="createProduct()">저장</button>
+    </div>
+</div>
+<!-- /.container-fluid -->
+<th:block th:replace="~{/common/commonFooter}"></th:block>
+<script type="text/javascript" src="/js/quill.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const productDetailEditor = new Quill("#productDetailEditor", {
+            theme: "snow",
+            modules: {
+                toolbar: [
+                    [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['bold', 'italic', 'underline'],
+                    ['link'],
+                    ['image']
+                ],
+            },
+        });
+
+        const imageHandler = () => {
+            const range = productDetailEditor.getSelection(); // 현재 커서 위치 저장
+            const input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/jpeg, image/png');
+            input.click();
+
+            input.onchange = () => {
+                imgFileUpload(input, productDetailEditor, range);
+            };
+        };
+
+        productDetailEditor.getModule('toolbar').addHandler('image', imageHandler);
+
+        document.getElementById("productColorOption").addEventListener('keydown', (event) => {
+            if (event.key === 'Enter')
+            {
+                productColorOptionAdd();
+            }
+        });
+
+        document.getElementById("productSizeOption").addEventListener('keydown', (event) => {
+            if (event.key === 'Enter')
+            {
+                productSizeOptionAdd();
+            }
+        });
+
+    });
+
+    const productColorOptionAdd = () => {
+        const productColorOptionInput = document.getElementById("productColorOption");
+        const productColorOptionListElement = document.getElementById("productColorOptionList");
+
+        if (productColorOptionInput.value === "" || productColorOptionInput.value.length <= 0)
+        {
+            alert("옵션 입력 후 추가해주세요.");
+            return;
+        }
+
+        if (productColorOptionListElement.querySelector(`.option[data-option='${productColorOptionInput.value}']`) != null)
+        {
+            alert("이미 존재하는 옵션입니다.");
+            return;
+        }
+
+        productColorOptionListElement.innerHTML += `<div class="option" data-option="${productColorOptionInput.value}">${productColorOptionInput.value}&nbsp;<span class="delete" onclick="deleteOption(this)">X</span></div>`;
+        productColorOptionInput.value = "";
+    }
+
+    const productSizeOptionAdd = () => {
+        const productSizeOptionInput = document.getElementById("productSizeOption");
+        const productSizeOptionListElement = document.getElementById("productSizeOptionList");
+
+        if (productSizeOptionInput.value === "" || productSizeOptionInput.value.length <= 0)
+        {
+            alert("옵션 입력 후 추가해주세요.");
+            return;
+        }
+
+        if (productSizeOptionListElement.querySelector(`.option[data-option='${productSizeOptionInput.value}']`) != null)
+        {
+            alert("이미 존재하는 옵션입니다.");
+            return;
+        }
+
+        productSizeOptionListElement.innerHTML += `<div class="option" data-option="${productSizeOptionInput.value}">${productSizeOptionInput.value}&nbsp;<span class="delete" onclick="deleteOption(this)">X</span></div>`;
+        productSizeOptionInput.value = "";
+    }
+
+    const deleteOption = (element) => {
+        element.closest('div.option').remove();
+    }
+
+    const getOptionList = (listElement) => {
+        const list = listElement.querySelectorAll(".option");
+
+        const returnList = [];
+
+        list.forEach(item => {
+            returnList.push(item.innerText.substring(0, item.innerText.length-2));
+        })
+
+        return returnList;
+    }
+
+    const createProduct = async () => {
+        const productName = document.getElementById("productName");
+        const productPrice = document.getElementById("productPrice");
+        const productCategory = document.getElementById("productCategory");
+        const productColorOptionList = document.getElementById("productColorOptionList");
+        const productSizeOptionList = document.getElementById("productSizeOptionList");
+        const productDetailEditor = document.getElementById("productDetailEditor");
+
+        if (productName.value === "" || productName.value.length <= 0)
+        {
+            alert("상품명을 입력해주세요.");
+            return;
+        }
+
+        if (productPrice.value === "" || productPrice.value.length <= 0)
+        {
+            alert("상품 가격을 입력해주세요.");
+            return;
+        }
+
+        if (productColorOptionList.childElementCount <= 0)
+        {
+            alert("상품 색상 옵션을 1개 이상 추가해주세요.");
+            return;
+        }
+
+        if (productSizeOptionList.childElementCount <= 0)
+        {
+            alert("상품 사이즈 옵션을 1개 이상 추가해주세요.");
+            return;
+        }
+
+        const data = {
+            productName: productName.value,
+            productPrice: productPrice.value,
+            productCategory: productCategory.value,
+            productColorOptionList: getOptionList(productColorOptionList),
+            productSizeOptionList: getOptionList(productSizeOptionList),
+            productDetailEditor: productDetailEditor.innerHTML,
+        }
+
+        await apiRequest(
+            HttpMethod.POST,
+            "/api/v1/admin/product",
+            data,
+            (res) => {
+                alert(res);
+                window.location.href = "/admin/product/list"
+            },
+            (err) => {
+                alert(err)
+            }
+        )
+    }
+
+    const imgFileUpload = async (input, productDetailEditor, range) => {
+        const file = input.files[0];  // 사용자가 선택한 첫 번째 파일
+
+        if (!file) {
+            alert("Please select a file first.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        await apiRequest(
+            HttpMethod.POST,
+            "/api/v1/admin/file",
+            formData,
+            (res) => {
+                productDetailEditor.insertEmbed(range.index, 'image', res.webpUrl);
+            },
+            (err) => {
+                alert(err)
+            }, true
+        )
+    }
+
+</script>
+<th:block th:replace="~{/common/commonFoot}"></th:block>

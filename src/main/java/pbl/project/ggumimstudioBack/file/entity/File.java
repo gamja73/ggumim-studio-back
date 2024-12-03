@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 import pbl.project.ggumimstudioBack.common.entity.BaseEntity;
+import pbl.project.ggumimstudioBack.user.entity.User;
 
 @Getter
 @Entity
@@ -19,12 +20,14 @@ public class File extends BaseEntity
     private Long fileUID;
 
     @Comment("회원 UID")
-    @Column(name = "user_uid")
-    private Long userUID;
+    @JoinColumn(name = "user_uid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User userUID;
 
     @Comment("관리자 UID")
-    @Column(name = "admin_uid")
-    private Long adminUID;
+    @JoinColumn(name = "admin_uid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User adminUID;
 
     @Comment("원본 파일명")
     @Column(name = "file_name")

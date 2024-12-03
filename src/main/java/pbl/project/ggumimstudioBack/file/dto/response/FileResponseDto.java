@@ -20,8 +20,8 @@ public class FileResponseDto
     public FileResponseDto(String fileName, String originUrl, String webpUrl)
     {
         this.fileName = fileName;
-        this.originUrl = originUrl;
-        this.webpUrl = webpUrl;
+        this.originUrl = "https://pub-05783cad7c334e7d80c4d282b349f717.r2.dev" + originUrl.substring(originUrl.indexOf("/origin"));
+        this.webpUrl = "https://pub-05783cad7c334e7d80c4d282b349f717.r2.dev" + webpUrl.substring(webpUrl.indexOf("/img"));
     }
 
     public File toEntity()

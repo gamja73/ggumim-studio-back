@@ -1,5 +1,6 @@
 package pbl.project.ggumimstudioBack.file.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,10 +13,11 @@ import pbl.project.ggumimstudioBack.file.repository.FileRepository;
 
 @Service
 @AllArgsConstructor
-public class FileService
+public class AdminFileService
 {
     private final R2Service r2Service;
     private final FileRepository fileRepository;
+    private final JwtUtil jwtUtil;
 
     /**
      * 파일 조회
@@ -33,13 +35,14 @@ public class FileService
      * 파일 업로드
      * @param file - 업로드 할 파일
      */
-    public FileResponseDto uploadFile(MultipartFile file)
+    public FileResponseDto uploadFile(MultipartFile file, HttpServletRequest request)
     {
         // 파일이 비어 있는지 확인
         if (file.isEmpty())
         {
             throw new CustomException(CustomErrorCode.FILE_IS_NULL_ERR);
         }
+//        jwtUtil.getUidFromToken(request);
 
         FileResponseDto dto = r2Service.uploadImage(file);
 
