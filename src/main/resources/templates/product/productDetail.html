@@ -27,38 +27,54 @@
 <!-- main content -->
 <div class="container-fluid">
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">상품 등록</h1>
-
+    <h1 class="h3 mb-2 text-gray-800">상품 상세</h1>
+    <div id="productUID" th:productUID="${pageData.getProductUID()}" style="display: none"></div>
     <div class="card shadow mb-4">
         <div style="width: 80%; margin: 10px auto">
             <label>메인 상품 이미지</label>
             <input type="file" id="productMainImgInput" class="form-control" accept="image/jpeg, image/png">
-            <div id="productMainImg" style="width: 300px; height: 300px; display: none;">
-                <img style="width: 100%; height: 100%;" src="">
+            <div id="productMainImg" style="width: 300px; height: 300px;">
+                <img style="width: 100%; height: 100%;" th:src="${pageData.getProductMainImg()}">
             </div>
 
             <label for="productName">상품명</label>
-            <input type="text" class="form-control" id="productName">
+            <input type="text" class="form-control" id="productName" th:value="${pageData.productName}">
+
+            <label for="productName">노출여부</label>
+            <div class="form-check form-switch" style="margin-bottom: 20px;">
+                <input class="form-check-input" type="checkbox" role="switch" onclick="changeExposure(this)" th:checked="${pageData.getIsExposure()}">
+            </div>
 
             <label for="productPrice">상품 가격</label>
-            <input type="number" class="form-control" id="productPrice">
+            <input type="number" class="form-control" id="productPrice" th:value="${pageData.getProductPrice()}">
 
             <label for="productCategory">상품 카테고리</label>
-            <input type="text" class="form-control" id="productCategory">
+            <input type="text" class="form-control" id="productCategory" th:value="${pageData.getProductCategory()}">
 
             <label for="productColorOption">상품 색상 옵션</label>
             <input type="text" class="form-control" id="productColorOption">
-            <div id="productColorOptionList" class="productOptionList"></div>
+            <div id="productColorOptionList" class="productOptionList">
+                <th:block th:each="colorData : ${pageData.getProductColorOptionList()}">
+                    <div class="option" th:data-option="${colorData}"><span th:text="${colorData}"></span>&nbsp;<span class="delete" onclick="deleteOption(this)">X</span></div>
+                </th:block>
+            </div>
 
             <label for="productSizeOption">상품 사이즈 옵션</label>
             <input type="text" class="form-control" id="productSizeOption">
-            <div id="productSizeOptionList" class="productOptionList"></div>
+            <div id="productSizeOptionList" class="productOptionList">
+                <th:block th:each="colorData : ${pageData.getProductSizeOptionList()}">
+                    <div class="option" th:data-option="${colorData}"><span th:text="${colorData}"></span>&nbsp;<span class="delete" onclick="deleteOption(this)">X</span></div>
+                </th:block>
+            </div>
 
             <label for="productDetailEditor" style="margin-top: 10px;">상품 상세</label>
-            <div id="productDetailEditor"></div>
+            <div id="productDetailEditor">
+                <th:block th:utext="${pageData.getProductDetail()}"></th:block>
+            </div>
+            <div class="col-12 d-flex" style="flex-direction: row-reverse;">
+                <button class="btn btn-primary" style="width: max-content; margin-top: 10px; margin-bottom: 10px;" onclick="updateProduct()">저장</button>
+            </div>
         </div>
-
-        <button class="btn btn-primary" style="width: max-content; right: 10px;" onclick="createProduct()">저장</button>
     </div>
 </div>
 <!-- /.container-fluid -->
@@ -181,7 +197,8 @@
         return returnList;
     }
 
-    const createProduct = async () => {
+    const updateProduct = async () => {
+        const productUID = document.getElementById("productUID").attributes.productUID.value;
         const productMainImgInput = document.getElementById("productMainImgInput");
         const productName = document.getElementById("productName");
         const productPrice = document.getElementById("productPrice");
@@ -190,10 +207,11 @@
         const productSizeOptionList = document.getElementById("productSizeOptionList");
         const productDetailEditor = document.getElementById("productDetailEditor");
 
-        if (!productMainImgInput.files[0])
+        let mainImgChanged = false;
+
+        if (productMainImgInput.files[0] !== undefined)
         {
-            alert("상품 이미지를 등록해주세요.");
-            return
+            mainImgChanged = true;
         }
 
         if (productName.value === "" || productName.value.length <= 0)
@@ -221,6 +239,7 @@
         }
 
         const data = {
+            productUID: productUID,
             productName: productName.value,
             productPrice: productPrice.value,
             productCategory: productCategory.value,
@@ -229,41 +248,60 @@
             productDetailEditor: productDetailEditor.innerHTML,
         }
 
-        const file = productMainImgInput.files[0];
+        if (mainImgChanged)
+        {
+            const file = productMainImgInput.files[0];
 
-        if (!file) {
-            alert("Please select a file first.");
-            return;
+            if (!file) {
+                alert("Please select a file first.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            await apiRequest(
+                HttpMethod.POST,
+                "/api/v1/admin/file",
+                formData,
+                (res) => {
+                    data.productMainImg = res.webpUrl;
+
+                    apiRequest(
+                        HttpMethod.PUT,
+                        "/api/v1/admin/product",
+                        data,
+                        (res) => {
+                            alert(res);
+                            window.location.reload();
+                        },
+                        (err) => {
+                            alert(err)
+                        }
+                    )
+                },
+                (err) => {
+                    alert(err)
+                    return null;
+                }, true
+            )
+        }
+        else
+        {
+            await apiRequest(
+                HttpMethod.PUT,
+                "/api/v1/admin/product",
+                data,
+                (res) => {
+                    alert(res);
+                    window.location.reload();
+                },
+                (err) => {
+                    alert(err)
+                }
+            )
         }
 
-        const formData = new FormData();
-        formData.append('file', file);
-
-        await apiRequest(
-            HttpMethod.POST,
-            "/api/v1/admin/file",
-            formData,
-            (res) => {
-                data.productMainImg = res.webpUrl;
-
-                apiRequest(
-                    HttpMethod.POST,
-                    "/api/v1/admin/product",
-                    data,
-                    (res) => {
-                        alert(res);
-                        window.location.href = "/admin/product/list"
-                    },
-                    (err) => {
-                        alert(err)
-                    }
-                )
-            },
-            (err) => {
-                alert(err)
-                return null;
-            }, true
-        )
     }
 
     const imgFileUploadByHandler = async (input, productDetailEditor, range) => {

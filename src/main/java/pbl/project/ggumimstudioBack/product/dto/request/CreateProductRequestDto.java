@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 public class CreateProductRequestDto
 {
+    private String productMainImg;
     private String productName;
     private BigDecimal productPrice;
     private String productCategory;
@@ -19,12 +20,14 @@ public class CreateProductRequestDto
     public Product toEntity()
     {
         return Product.builder()
+                .productMainImg(this.productMainImg)
                 .productName(this.productName)
                 .productPrice(this.productPrice)
                 .productCategory(this.productCategory)
                 .productColorOptionList(this.productColorOptionList)
                 .productSizeOptionList(this.productSizeOptionList)
                 .productDetail(this.productDetailEditor)
+                .isExposure(false)
                 .build();
     }
 }

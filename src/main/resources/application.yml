@@ -2,6 +2,10 @@ server:
     port: ${server.port}
 
 spring:
+    servlet:
+        multipart:
+            maxFileSize: 100MB # 파일 하나의 최대 크기
+            maxRequestSize: 300MB  # 한 번에 최대 업로드 가능 용량
     devtools:
         restart:
             enabled: false
@@ -20,7 +24,7 @@ spring:
         database: postgresql
         database-platform: org.hibernate.dialect.PostgreSQLDialect
         hibernate:
-            ddl-auto: update
+            ddl-auto: none
             generate-ddl: false
             show-mysql: true
             properties:
