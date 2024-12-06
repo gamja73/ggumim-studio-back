@@ -27,14 +27,13 @@ import java.util.List;
 @Service
 public class R2Service
 {
-
     @Autowired
     private AmazonS3 r2Client;
 
     @Value("${R2-config.bucketName}")
     private String bucketName;
 
-    private static final List<String> SUPPORTED_FORMATS = Arrays.asList("png", "jpeg");
+    private static final List<String> SUPPORTED_FORMATS = Arrays.asList("png", "jpeg", "jpg");
 
     // R2에 이미지 업로드 (origin, Webp 변환 파일)
     public FileResponseDto uploadImage(MultipartFile file)

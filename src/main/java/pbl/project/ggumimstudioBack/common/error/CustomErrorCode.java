@@ -34,6 +34,9 @@ public enum CustomErrorCode
     FILE_IS_NULL_ERR("FILE-001", "파일이 없습니다."),
     FILE_INVALID_FORMAT_ERR("FILE-002", "지원하지 않는 파일 형식입니다."),
     FILE_NOT_FOUND_ERR("FILE-003", "파일을 찾을 수 없습니다."),
+
+    // 상품
+    PRODUCT_NOT_FOUND("PRODUCT-001", "상품을 찾을 수 없습니다."),
     ;
 
     private final String errorCode;
