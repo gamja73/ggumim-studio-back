@@ -1,6 +1,8 @@
 package pbl.project.ggumimstudioBack.product.repository;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.Wildcard;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.AllArgsConstructor;
 import pbl.project.ggumimstudioBack.common.dto.request.BaseSearchParamRequestDto;
@@ -46,18 +48,25 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom
     @Override
     public PaginationResponse<ProductListResponseDto> getProductList(BaseSearchParamRequestDto searchParam)
     {
+        BooleanBuilder builder = new BooleanBuilder();
+
+        builder.and(product.isDeleted.eq(false).and(product.isExposure.eq(true)));
+
         int skip = (searchParam.getPage() - 1) * searchParam.getLimit();
 
-        List<Product> query = queryFactory
+        JPAQuery<Product> query = queryFactory
                 .selectFrom(product)
-                .limit(searchParam.getLimit())
-                .offset(skip)
-                .orderBy(product.productUID.desc())
-                .fetch();
+                .where(builder);
+
+        List<Product> productList = query.limit(searchParam.getLimit())
+            .offset(skip)
+            .orderBy(product.productUID.desc())
+            .fetch();
 
         Long count = queryFactory
                 .select(Wildcard.count)
                 .from(product)
+                .where(builder)
                 .fetchFirst();
 
         return PaginationResponse.<ProductListResponseDto>builder()

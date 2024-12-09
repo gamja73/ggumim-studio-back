@@ -1,44 +1,38 @@
-package pbl.project.ggumimstudioBack.product.controller;
+package pbl.project.ggumimstudioBack.user.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pbl.project.ggumimstudioBack.common.dto.request.BaseSearchParamRequestDto;
 import pbl.project.ggumimstudioBack.common.dto.response.PaginationResponse;
-import pbl.project.ggumimstudioBack.product.dto.response.AdminProductDetailResponseDto;
-import pbl.project.ggumimstudioBack.product.dto.response.AdminProductListResponseDto;
-import pbl.project.ggumimstudioBack.product.service.AdminProductService;
+import pbl.project.ggumimstudioBack.user.dto.response.AdminUserDetailResponseDto;
+import pbl.project.ggumimstudioBack.user.dto.response.AdminUserListResponseDto;
+import pbl.project.ggumimstudioBack.user.service.AdminUserService;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin/product")
-public class AdminProductViewController
+@RequestMapping("/admin/user")
+public class AdminUserViewController
 {
-    private final AdminProductService adminProductService;
+    private final AdminUserService adminUserService;
 
-    @GetMapping("")
-    public String createAdminProduct()
+    @GetMapping("/{userUID}")
+    public String adminProductDetail(@PathVariable("userUID") Long userUID, Model model)
     {
-        return "product/productCreateForm";
-    }
-
-    @GetMapping("/{productUID}")
-    public String adminProductDetail(@PathVariable("productUID") Long productUID, Model model)
-    {
-        AdminProductDetailResponseDto pageData = adminProductService.getProductDetail(productUID);
+        AdminUserDetailResponseDto pageData = adminUserService.getAdminUserDetail(userUID);
 
         model.addAttribute("pageData", pageData);
 
-        return "product/productDetail";
+        return "user/userDetail";
     }
 
     @GetMapping("/list")
-    public String adminProductList(BaseSearchParamRequestDto searchParam, Model model)
+    public String adminUserList(BaseSearchParamRequestDto searchParam, Model model)
     {
-        PaginationResponse<AdminProductListResponseDto> pageData = adminProductService.getAdminProductList(searchParam);
+        PaginationResponse<AdminUserListResponseDto> pageData = adminUserService.getAdminUserList(searchParam);
 
         model.addAttribute("totalCount", pageData.getTotalCount());
         model.addAttribute("totalPages", pageData.getTotalPages());
@@ -53,8 +47,8 @@ public class AdminProductViewController
         model.addAttribute("endAt", searchParam.getEndAt());
 
         model.addAttribute("pageData", pageData);
-        model.addAttribute("pageUrl", "/admin/product/list");
+        model.addAttribute("pageUrl", "/admin/user/list");
 
-        return "product/productList";
+        return "user/userList";
     }
 }

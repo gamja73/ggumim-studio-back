@@ -1,6 +1,7 @@
 package pbl.project.ggumimstudioBack.product.dto.response;
 
 import lombok.Data;
+import pbl.project.ggumimstudioBack.common.util.CommonUtil;
 import pbl.project.ggumimstudioBack.product.entity.Product;
 
 @Data
@@ -18,8 +19,8 @@ public class AdminProductListResponseDto
         this.productUID = product.getProductUID();
         this.productName = product.getProductName();
         this.productPrice = product.getProductPrice().toString();
-        this.createdAt = product.getCreatedAt().toString();
-        this.updatedAt = product.getUpdatedAt().toString();
+        this.createdAt = product.getCreatedAt() != null ? CommonUtil.localDateTimeFormatToYYYYMMDD(product.getCreatedAt()) : "-";
+        this.updatedAt = product.getUpdatedAt() != null ? CommonUtil.localDateTimeFormatToYYYYMMDD(product.getUpdatedAt()) : "-";
         this.isExposure = product.getIsExposure();
     }
 }

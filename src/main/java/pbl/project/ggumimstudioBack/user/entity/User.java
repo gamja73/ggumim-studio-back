@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 import pbl.project.ggumimstudioBack.common.entity.BaseEntity;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Entity
 @Builder
@@ -52,4 +54,13 @@ public class User extends BaseEntity
     @Comment("회원 별명")
     @Column(name = "nickname")
     private String nickname;
+
+    @Comment("마지막 로그인 일시")
+    @Column(name = "last_login_at")
+    private LocalDateTime lastLoginAt;
+
+    public void login()
+    {
+        this.lastLoginAt = LocalDateTime.now();
+    }
 }

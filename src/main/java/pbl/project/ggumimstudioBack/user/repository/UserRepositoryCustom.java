@@ -1,5 +1,8 @@
 package pbl.project.ggumimstudioBack.user.repository;
 
+import pbl.project.ggumimstudioBack.common.dto.request.BaseSearchParamRequestDto;
+import pbl.project.ggumimstudioBack.common.dto.response.PaginationResponse;
+import pbl.project.ggumimstudioBack.user.dto.response.AdminUserListResponseDto;
 import pbl.project.ggumimstudioBack.user.entity.User;
 
 public interface UserRepositoryCustom
@@ -14,4 +17,6 @@ public interface UserRepositoryCustom
 
     // 이메일 있는지 확인
     Boolean existsByEmail(String email);
+
+    PaginationResponse<AdminUserListResponseDto> getAdminUserList(BaseSearchParamRequestDto searchParam);
 }

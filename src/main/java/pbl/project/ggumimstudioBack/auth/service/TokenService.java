@@ -2,6 +2,7 @@ package pbl.project.ggumimstudioBack.auth.service;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +29,7 @@ public class TokenService
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public TokenResponseDto userLogin(LoginRequestDto loginRequestDto)
     {
         User findUser = userRepository.findByUserID(loginRequestDto.getId());
@@ -48,6 +50,8 @@ public class TokenService
         String refreshToken = jwtUtil.generateToken(customPayload, false);
 
         storeRefreshToken(customPayload.getUid().toString(), refreshToken, 1000 * 60 * 60 * 24 * 7);
+
+        findUser.login(); // 마지막 로그인시간 추가
 
         return new TokenResponseDto(accessToken, refreshToken);
     }

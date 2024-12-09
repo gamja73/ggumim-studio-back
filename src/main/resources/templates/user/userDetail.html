@@ -1,0 +1,66 @@
+<th:block th:replace="~{/common/commonHead}"></th:block>
+<th:block th:replace="~{/common/commonHeader}"></th:block>
+<!-- main content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">회원 상세</h1>
+    <p class="mb-4"></p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <colgroup>
+                        <col class="col-4" style="background-color: #f5f5f5">
+                        <col class="col-8">
+                    </colgroup>
+                    <tr>
+                        <th>No</th>
+                        <td th:text="${pageData.getUserUID()}"></td>
+                    </tr>
+                    <tr>
+                        <th>회원 ID</th>
+                        <td th:text="${pageData.getUserId()}"></td>
+                    </tr>
+                    <tr>
+                        <th>회원명</th>
+                        <td th:text="${pageData.getUserName()}"></td>
+                    </tr>
+                    <tr>
+                        <th>회원 Email</th>
+                        <td th:text="${pageData.getUserEmail()}"></td>
+                    </tr>
+                    <tr>
+                        <th>회원 휴대전화번호</th>
+                        <td th:text="${pageData.getCallPhone()}"></td>
+                    </tr>
+                    <tr>
+                        <th>주소</th>
+                        <td th:text="${pageData.getAddress() + ' ' + pageData.getAddressDetail()}"></td>
+                    </tr>
+                    <tr>
+                        <th>닉네임</th>
+                        <td th:text="${pageData.getNickname()}"></td>
+                    </tr>
+                    <tr>
+                        <th>마지막 로그인 일시</th>
+                        <td th:text="${pageData.getLastLoginAt()}"></td>
+                    </tr>
+                    <tr>
+                        <th>계정 생성 일시</th>
+                        <td th:text="${pageData.getCreatedAt()}"></td>
+                    </tr>
+                    <tr>
+                        <th>계정 수정 일시</th>
+                        <td th:text="${pageData.getUpdatedAt()}"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+<th:block th:replace="~{/common/commonFooter}"></th:block>
+<th:block th:replace="~{/common/commonFoot}"></th:block>
