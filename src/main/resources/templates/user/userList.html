@@ -4,7 +4,7 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">상품 목록</h1>
+    <h1 class="h3 mb-2 text-gray-800">회원 목록</h1>
     <p class="mb-4"></p>
 
     <!-- DataTales Example -->
@@ -15,26 +15,24 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>상품명</th>
-                            <th>가격</th>
-                            <th>생성일</th>
-                            <th>최종 수정일</th>
-                            <th>노출여부</th>
+                            <th>아이디</th>
+                            <th>이름</th>
+                            <th>닉네임</th>
+                            <th>생성일시</th>
+                            <th>수정일시</th>
+                            <th>마지막 접속일시</th>
                             <th>상세</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="item : ${pageData.getItemList()}" th:productUID="${item.getProductUID()}">
-                            <td th:text="${item.getProductUID()}"></td>
-                            <td th:text="${item.getProductName()}"></td>
-                            <td th:text="${item.getProductPrice()}"></td>
+                        <tr th:each="item : ${pageData.getItemList()}" th:userUID="${item.getUserUID()}">
+                            <td th:text="${item.getUserUID()}"></td>
+                            <td th:text="${item.getUserId()}"></td>
+                            <td th:text="${item.getUserName()}"></td>
+                            <td th:text="${item.getNickname()}"></td>
                             <td th:text="${item.getCreatedAt()}"></td>
                             <td th:text="${item.getUpdatedAt()}"></td>
-                            <td>
-                                <div class="form-check form-switch" style="width: min-content; margin: auto;">
-                                    <input class="form-check-input" type="checkbox" role="switch" onchange="changeExposure(this)" th:checked="${item.getIsExposure()}">
-                                </div>
-                            </td>
+                            <td th:text="${item.getLastLoginAt()}"></td>
                             <td>
                                 <button class="btn btn-dark" onclick="moveDetailPage(this)">상세</button>
                             </td>
@@ -70,23 +68,7 @@
 <th:block th:replace="~{/common/commonFooter}"></th:block>
 <script>
     const moveDetailPage = (element) => {
-        window.location.href = "/admin/product/" + element.closest("tr").attributes.productUID.value;
-    }
-
-    const changeExposure = async (element) => {
-        const productUID = element.closest("tr").attributes.productUID.value;
-
-        await apiRequest(
-            HttpMethod.PUT,
-            "/api/v1/admin/product/exposure",
-            { productUID: productUID, isExposure : element.value === "on" },
-            (res) => {
-                alert(res);
-            },
-            (err) => {
-                alert(err)
-            }
-        )
+        window.location.href = "/admin/user/" + element.closest("tr").attributes.userUID.value;
     }
 </script>
 <th:block th:replace="~{/common/commonFoot}"></th:block>

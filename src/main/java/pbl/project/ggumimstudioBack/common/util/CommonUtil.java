@@ -2,6 +2,7 @@ package pbl.project.ggumimstudioBack.common.util;
 
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.text.SimpleDateFormat;
@@ -27,7 +28,7 @@ public class CommonUtil
      * @param phoneNumber - 검사할 전화번호
      * @return 전화번호 형식이 맞으면 true, 아니면 false
      */
-    public boolean isValidPhoneNumber(String phoneNumber)
+    public static boolean isValidPhoneNumber(String phoneNumber)
     {
         return matchesRegex(phoneNumber, PHONE_REGEX);
     }
@@ -38,7 +39,7 @@ public class CommonUtil
      * @param phoneNumber - 포맷을 변경할 전화번호
      * @return 변경된 전화번호
      */
-    public String convertToLocalFormat(String phoneNumber)
+    public static String convertToLocalFormat(String phoneNumber)
     {
         if (phoneNumber == null || phoneNumber.length() < 15)
         {
@@ -54,7 +55,7 @@ public class CommonUtil
      * @param userId - 검사할 아이디
      * @return 아이디 형식이 맞으면 true, 아니면 false
      */
-    public boolean isValidUserId(String userId)
+    public static boolean isValidUserId(String userId)
     {
         return matchesRegex(userId, USERID_REGEX);
     }
@@ -65,7 +66,7 @@ public class CommonUtil
      * @param email - 검사할 이메일
      * @return 이메일 형식이 맞으면 true, 아니면 false
      */
-    public boolean isValidEmail(String email)
+    public static boolean isValidEmail(String email)
     {
         return matchesRegex(email, EMAIL_REGEX);
     }
@@ -76,7 +77,7 @@ public class CommonUtil
      * @param date - 검사할 날짜
      * @return 날짜 형식이 맞으면 true, 아니면 false
      */
-    public boolean isValidLocalDate(String date)
+    public static boolean isValidLocalDate(String date)
     {
         return matchesRegex(date, DATE_REGEX) && isValidDateOnly(date);
     }
@@ -87,7 +88,7 @@ public class CommonUtil
      * @param dateTime - 검사할 날짜 및 시간
      * @return 날짜 및 시간 형식이 맞으면 true, 아니면 false
      */
-    public boolean isValidLocalDateTime(String dateTime)
+    public static boolean isValidLocalDateTime(String dateTime)
     {
         if (!matchesRegex(dateTime, DATETIME_REGEX))
         {
@@ -104,7 +105,7 @@ public class CommonUtil
      * @param date - 날짜
      * @return 날짜가 유효한 날짜이면 true, 아니면 false
      */
-    private boolean isValidDateOnly(String date)
+    private static boolean isValidDateOnly(String date)
     {
         String[] dateParts = date.split("-");
         int year = Integer.parseInt(dateParts[0]);
@@ -126,7 +127,7 @@ public class CommonUtil
      * @param year - 검사할 연도
      * @return 윤년이면 true, 아니면 false
      */
-    private boolean isLeapYear(int year)
+    private static boolean isLeapYear(int year)
     {
         return (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)); // 윤년 계산
     }
@@ -138,7 +139,7 @@ public class CommonUtil
      * @param month - 월
      * @return 해당 월의 최대 일수
      */
-    private int getMaxDayOfMonth(int year, int month)
+    private static int getMaxDayOfMonth(int year, int month)
     {
         return switch (month)
         {
@@ -155,7 +156,7 @@ public class CommonUtil
      * @param time - 시간 (HH:mm:ss 형식)
      * @return 유효한 시간 형식이면 true, 아니면 false
      */
-    private boolean isValidTime(String time)
+    private static boolean isValidTime(String time)
     {
         String[] timeParts = time.split(":"); // 시, 분, 초로 분리
         int hour = Integer.parseInt(timeParts[0]);
@@ -172,7 +173,7 @@ public class CommonUtil
      * @param regex - 매칭할 정규식
      * @return 정규식에 맞으면 true, 아니면 false
      */
-    private boolean matchesRegex(String input, String regex)
+    private static boolean matchesRegex(String input, String regex)
     {
         if (input == null)
         {
@@ -190,7 +191,7 @@ public class CommonUtil
      * @param number - 숫자
      * @return 쉼표가 찍힌 숫자 문자열
      */
-    public String formatNumberWithComma(Integer number)
+    public static String formatNumberWithComma(Integer number)
     {
         return String.format("%,d", number);
     }
@@ -200,7 +201,7 @@ public class CommonUtil
      *
      * @return 현재 날짜 및 시간
      */
-    public String getCurrentDateTime()
+    public static String getCurrentDateTime()
     {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(new Date());
@@ -213,7 +214,7 @@ public class CommonUtil
      * @param maxLength - 최대 길이
      * @return 잘린 문자열 (길이 초과 시 '...' 추가)
      */
-    public String truncateString(String str, Integer maxLength)
+    public static String truncateString(String str, Integer maxLength)
     {
         if (str == null || str.length() <= maxLength)
         {
@@ -229,7 +230,7 @@ public class CommonUtil
      * @param str - 공백을 제거할 문자열
      * @return 공백이 제거된 문자열
      */
-    public String removeWhitespace(String str)
+    public static String removeWhitespace(String str)
     {
         if (str != null)
         {
@@ -237,5 +238,27 @@ public class CommonUtil
         }
 
         return null;
+    }
+
+    /**
+     * LocalDateTime -> YYYY-MM-DD
+     * 
+     * @param localDateTime - 포메팅 문자열로 만들 LocalDateTime
+     * @return 포메팅된 문자열 - YYYY-MM-DD 형식
+     */
+    public static String localDateTimeFormatToYYYYMMDD(LocalDateTime localDateTime)
+    {
+        return localDateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
+    /**
+     * LocalDateTime -> YYYY-MM-DD HH:MM:SS
+     * 
+     * @param localDateTime - 포메팅 문자열로 만들 LocalDateTime
+     * @return 포메팅된 문자열 - YYYY-MM-DD HH:MM:SS 형식
+     */
+    public static String localDateTimeFormatToYYYYMMDDHHMMSS(LocalDateTime localDateTime)
+    {
+        return localDateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 }

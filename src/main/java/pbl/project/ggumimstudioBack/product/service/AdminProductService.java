@@ -57,7 +57,7 @@ public class AdminProductService
         return new AdminProductDetailResponseDto(target);
     }
 
-    public PaginationResponse<AdminProductListResponseDto> getProductList(BaseSearchParamRequestDto searchParam)
+    public PaginationResponse<AdminProductListResponseDto> getAdminProductList(BaseSearchParamRequestDto searchParam)
     {
         return productRepository.getAdminProductList(searchParam);
     }
