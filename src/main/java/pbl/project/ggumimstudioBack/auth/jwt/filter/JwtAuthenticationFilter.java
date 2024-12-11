@@ -30,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
     {
         String token = getTokenFromRequest(request);
 
-        if (token != null)
+        if (token != null && !request.getServletPath().equals("/api/v1/auth/refresh"))
         {
             try
             {

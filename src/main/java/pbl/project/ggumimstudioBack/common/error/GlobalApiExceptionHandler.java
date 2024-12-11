@@ -3,14 +3,18 @@ package pbl.project.ggumimstudioBack.common.error;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import pbl.project.ggumimstudioBack.common.dto.response.CommonApiResponse;
+
+import javax.security.sasl.AuthenticationException;
 
 @RestControllerAdvice
 public class GlobalApiExceptionHandler
 {
+
     // 404 Not Found 예외 처리
-    @ExceptionHandler(NoResourceFoundException.class)
+    @ExceptionHandler({NoResourceFoundException.class, NoHandlerFoundException.class})
     public ModelAndView handleNotFoundException()
     {
         return new ModelAndView("redirect:/admin/404");
@@ -20,6 +24,14 @@ public class GlobalApiExceptionHandler
     public CommonApiResponse<CustomErrorResponse> handleCustomErrorResponseException(CustomException ex)
     {
         CustomErrorResponse customErrorResponse = CustomErrorResponse.of("400", ex.getMessage());
+
+        return CommonApiResponse.ERR(customErrorResponse);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public CommonApiResponse<CustomErrorResponse> handleAuthErrorResponseException(CustomException ex)
+    {
+        CustomErrorResponse customErrorResponse = CustomErrorResponse.of("401", ex.getMessage());
 
         return CommonApiResponse.ERR(customErrorResponse);
     }

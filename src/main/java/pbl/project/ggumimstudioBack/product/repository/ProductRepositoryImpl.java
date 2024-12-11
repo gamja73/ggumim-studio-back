@@ -50,7 +50,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom
     {
         BooleanBuilder builder = new BooleanBuilder();
 
-        builder.and(product.isDeleted.eq(false).and(product.isExposure.eq(true)));
+        builder.and(product.isDeleted.eq(false).and(product.isVisible.eq(true)));
 
         int skip = (searchParam.getPage() - 1) * searchParam.getLimit();
 
@@ -73,7 +73,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom
                 .totalCount(count.intValue())
                 .currentPage(searchParam.getPage())
                 .totalPages(count > 0 ? (int) Math.ceil((double) count / searchParam.getLimit()) : 1)
-                .itemList(query.stream().map(ProductListResponseDto::new).toList())
+                .itemList(productList.stream().map(ProductListResponseDto::new).toList())
                 .build();
     }
 }

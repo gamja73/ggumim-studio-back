@@ -32,7 +32,7 @@
                             <td th:text="${item.getUpdatedAt()}"></td>
                             <td>
                                 <div class="form-check form-switch" style="width: min-content; margin: auto;">
-                                    <input class="form-check-input" type="checkbox" role="switch" onchange="changeExposure(this)" th:checked="${item.getIsExposure()}">
+                                    <input class="form-check-input" type="checkbox" role="switch" onchange="changeExposure(this)" th:checked="${item.getIsVisible()}">
                                 </div>
                             </td>
                             <td>
@@ -79,7 +79,7 @@
         await apiRequest(
             HttpMethod.PUT,
             "/api/v1/admin/product/exposure",
-            { productUID: productUID, isExposure : element.value === "on" },
+            { productUID: productUID, isVisible : element.value === "on" },
             (res) => {
                 alert(res);
             },

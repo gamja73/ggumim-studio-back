@@ -27,7 +27,7 @@ public class CreateProductRequestDto
                 .productColorOptionList(this.productColorOptionList)
                 .productSizeOptionList(this.productSizeOptionList)
                 .productDetail(this.productDetailEditor)
-                .isExposure(false)
+                .isVisible(false)
                 .build();
     }
 }

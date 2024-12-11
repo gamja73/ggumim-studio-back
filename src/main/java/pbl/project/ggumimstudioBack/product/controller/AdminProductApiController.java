@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pbl.project.ggumimstudioBack.common.dto.response.CommonApiResponse;
 import pbl.project.ggumimstudioBack.product.dto.request.CreateProductRequestDto;
-import pbl.project.ggumimstudioBack.product.dto.request.UpdateExposureRequestDto;
 import pbl.project.ggumimstudioBack.product.dto.request.UpdateProductRequestDto;
+import pbl.project.ggumimstudioBack.product.dto.request.UpdateVisibleRequestDto;
 import pbl.project.ggumimstudioBack.product.service.AdminProductService;
 
 @RestController
@@ -28,8 +28,8 @@ public class AdminProductApiController
     }
 
     @PutMapping("/exposure")
-    public CommonApiResponse<String> createProduct(@RequestBody UpdateExposureRequestDto requestDto)
+    public CommonApiResponse<String> createProduct(@RequestBody UpdateVisibleRequestDto requestDto)
     {
-        return CommonApiResponse.OK(adminProductService.updateProductExposure(requestDto));
+        return CommonApiResponse.OK(adminProductService.updateProductVisible(requestDto));
     }
 }

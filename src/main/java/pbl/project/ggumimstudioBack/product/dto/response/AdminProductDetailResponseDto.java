@@ -28,6 +28,6 @@ public class AdminProductDetailResponseDto
         this.productColorOptionList = product.getProductColorOptionList();
         this.productSizeOptionList = product.getProductSizeOptionList();
         this.productDetail = product.getProductDetail();
-        this.isExposure = product.getIsExposure();
+        this.isExposure = product.getIsVisible();
     }
 }

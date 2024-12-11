@@ -16,5 +16,5 @@ public class UpdateProductRequestDto
     private List<String> productColorOptionList;
     private List<String> productSizeOptionList;
     private String productDetailEditor;
-    private Boolean isExposure;
+    private Boolean isVisible;
 }

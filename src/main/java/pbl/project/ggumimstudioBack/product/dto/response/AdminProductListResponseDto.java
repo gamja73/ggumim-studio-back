@@ -12,15 +12,15 @@ public class AdminProductListResponseDto
     private String productPrice;
     private String createdAt;
     private String updatedAt;
-    private Boolean isExposure;
+    private Boolean isVisible;
 
     public AdminProductListResponseDto(Product product)
     {
         this.productUID = product.getProductUID();
         this.productName = product.getProductName();
-        this.productPrice = product.getProductPrice().toString();
+        this.productPrice = product.getProductPrice() != null ? CommonUtil.formatNumberWithComma(product.getProductPrice().intValue()) : "-";
         this.createdAt = product.getCreatedAt() != null ? CommonUtil.localDateTimeFormatToYYYYMMDD(product.getCreatedAt()) : "-";
         this.updatedAt = product.getUpdatedAt() != null ? CommonUtil.localDateTimeFormatToYYYYMMDD(product.getUpdatedAt()) : "-";
-        this.isExposure = product.getIsExposure();
+        this.isVisible = product.getIsVisible();
     }
 }

@@ -3,8 +3,8 @@ package pbl.project.ggumimstudioBack.product.dto.request;
 import lombok.Data;
 
 @Data
-public class UpdateExposureRequestDto
+public class UpdateVisibleRequestDto
 {
     private Long productUID;
-    private Boolean isExposure;
+    private Boolean isVisible;
 }

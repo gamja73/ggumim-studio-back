@@ -57,8 +57,8 @@ public class Product extends BaseEntity
     private String productDetail;
 
     @Comment("노출 여부")
-    @Column(name = "is_exposure")
-    private Boolean isExposure;
+    @Column(name = "is_visible")
+    private Boolean isVisible;
 
     public void update(UpdateProductRequestDto requestDto)
     {
@@ -90,14 +90,14 @@ public class Product extends BaseEntity
         {
             this.productDetail = requestDto.getProductDetailEditor();
         }
-        if (requestDto.getIsExposure() != null)
+        if (requestDto.getIsVisible() != null)
         {
-            this.isExposure = requestDto.getIsExposure();
+            this.isVisible = requestDto.getIsVisible();
         }
     }
 
-    public void changeExposure(Boolean isExposure)
+    public void changeVisible(Boolean isVisible)
     {
-        this.isExposure = isExposure;
+        this.isVisible = isVisible;
     }
 }
