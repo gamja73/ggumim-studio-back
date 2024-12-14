@@ -13,6 +13,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import pbl.project.ggumimstudioBack.auth.jwt.dto.CustomJwtPayload;
 import pbl.project.ggumimstudioBack.common.error.CustomErrorCode;
 import pbl.project.ggumimstudioBack.common.error.CustomException;
@@ -76,9 +78,18 @@ public class JwtUtil
         return true;
     }
 
-    public Long getUidFromToken(HttpServletRequest request)
-    {
-        return extractClaims(getAccessTokenCookie(request)).getUid();
+    public Long getUserUID() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+
+        String authorization = request.getHeader("Authorization");
+
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            return null;
+        }
+
+        String token = authorization.split(" ")[1];
+
+        return extractClaims(token).getUid();
     }
 
     private String getAccessTokenCookie(HttpServletRequest request)

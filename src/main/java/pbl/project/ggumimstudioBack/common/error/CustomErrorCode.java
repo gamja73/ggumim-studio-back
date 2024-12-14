@@ -37,6 +37,11 @@ public enum CustomErrorCode
 
     // 상품
     PRODUCT_NOT_FOUND("PRODUCT-001", "상품을 찾을 수 없습니다."),
+
+    // 주문
+    ORDER_PRODUCT_NOT_FOUND("ORDER-001", "주문할 상품을 찾을 수 없습니다."),
+    ORDER_CART_PRODUCT_NOT_FOUND("ORDER-002", "주문할 상품을 찾을 수 없습니다."),
+    ORDER_NOT_FOUND("ORDER-003", "주문 정보를 찾을 수 없습니다,"),
     ;
 
     private final String errorCode;

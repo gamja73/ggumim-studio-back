@@ -1,8 +1,10 @@
 package pbl.project.ggumimstudioBack.common.util;
 
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.text.SimpleDateFormat;
@@ -260,5 +262,15 @@ public class CommonUtil
     public static String localDateTimeFormatToYYYYMMDDHHMMSS(LocalDateTime localDateTime)
     {
         return localDateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
+    public static String generateOrderID()
+    {
+        String characters = "abcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < 8; i++) {
+            result.append(characters.charAt(ThreadLocalRandom.current().nextInt(characters.length())));
+        }
+        return LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd")) + "-" + result.toString();
     }
 }

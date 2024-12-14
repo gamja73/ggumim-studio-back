@@ -90,13 +90,19 @@ const apiRequest = async (method, url, data = null, successCallback, failCallbac
 const refreshAccessToken = async (refreshToken) => {
     try
     {
-        const response = await axios.post(AUTH_URL + '/refresh', { refreshToken });
-        const newAccessToken = response.data.accessToken;
-        const newRefreshToken = response.data.refreshToken;
+        const response = await axios.post(AUTH_URL + '/refresh', { refreshToken }, { withCredentials: true });
+        const newAccessToken = response.data.data.accessToken;
+        const newRefreshToken = response.data.data.refreshToken;
 
-        // 새 토큰 쿠키에 저장
-        setCookie("accessToken", newAccessToken);
-        setCookie("refreshToken", newRefreshToken);
+        if (response.data.statusCode === 200)
+        {
+            if (newAccessToken !== undefined && newRefreshToken !== undefined)
+            {
+                // 새 토큰 쿠키에 저장
+                setCookie("accessToken", newAccessToken);
+                setCookie("refreshToken", newRefreshToken);
+            }
+        }
 
         return newAccessToken;
     }
