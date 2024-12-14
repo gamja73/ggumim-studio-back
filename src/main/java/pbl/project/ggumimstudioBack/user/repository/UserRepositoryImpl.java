@@ -5,14 +5,11 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.AllArgsConstructor;
 import pbl.project.ggumimstudioBack.common.dto.request.BaseSearchParamRequestDto;
 import pbl.project.ggumimstudioBack.common.dto.response.PaginationResponse;
-import pbl.project.ggumimstudioBack.product.dto.response.ProductListResponseDto;
-import pbl.project.ggumimstudioBack.product.entity.Product;
 import pbl.project.ggumimstudioBack.user.dto.response.AdminUserListResponseDto;
 import pbl.project.ggumimstudioBack.user.entity.User;
 
 import java.util.List;
 
-import static pbl.project.ggumimstudioBack.product.entity.QProduct.product;
 import static pbl.project.ggumimstudioBack.user.entity.QUser.user;
 
 @AllArgsConstructor
