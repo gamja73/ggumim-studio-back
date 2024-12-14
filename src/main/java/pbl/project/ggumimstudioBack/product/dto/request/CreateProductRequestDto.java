@@ -4,17 +4,15 @@ import lombok.Data;
 import pbl.project.ggumimstudioBack.product.entity.Product;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Data
 public class CreateProductRequestDto
 {
     private String productMainImg;
     private String productName;
+    private String productDescription;
     private BigDecimal productPrice;
     private String productCategory;
-    private List<String> productColorOptionList;
-    private List<String> productSizeOptionList;
     private String productDetailEditor;
 
     public Product toEntity()
@@ -22,12 +20,11 @@ public class CreateProductRequestDto
         return Product.builder()
                 .productMainImg(this.productMainImg)
                 .productName(this.productName)
+                .productDescription(this.productDescription)
                 .productPrice(this.productPrice)
                 .productCategory(this.productCategory)
-                .productColorOptionList(this.productColorOptionList)
-                .productSizeOptionList(this.productSizeOptionList)
                 .productDetail(this.productDetailEditor)
-                .isExposure(false)
+                .isVisible(false)
                 .build();
     }
 }

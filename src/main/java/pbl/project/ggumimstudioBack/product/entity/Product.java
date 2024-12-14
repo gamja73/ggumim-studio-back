@@ -27,12 +27,16 @@ public class Product extends BaseEntity
     private Long productUID;
 
     @Comment("상품 메인 이미지")
-    @Column(name = "product_main_img")
+    @Column(name = "product_main_img", columnDefinition = "TEXT")
     private String productMainImg;
 
     @Comment("상품명")
     @Column(name = "product_name")
     private String productName;
+
+    @Comment("상품 설명")
+    @Column(name = "product_description", columnDefinition = "TEXT")
+    private String productDescription;
 
     @Comment("상품 가격")
     @Column(name = "product_price")
@@ -42,23 +46,13 @@ public class Product extends BaseEntity
     @Column(name = "product_category")
     private String productCategory;
 
-    @Comment("상품 색상 옵션")
-    @Column(name = "product_color_option")
-    @Convert(converter = StringListConverter.class)
-    private List<String> productColorOptionList;
-
-    @Comment("상품 사이즈 옵션")
-    @Column(name = "product_size_option")
-    @Convert(converter = StringListConverter.class)
-    private List<String> productSizeOptionList;
-
     @Comment("상품 상세")
-    @Column(name = "product_detail")
+    @Column(name = "product_detail", columnDefinition = "TEXT")
     private String productDetail;
 
     @Comment("노출 여부")
-    @Column(name = "is_exposure")
-    private Boolean isExposure;
+    @Column(name = "is_visible")
+    private Boolean isVisible;
 
     public void update(UpdateProductRequestDto requestDto)
     {
@@ -70,6 +64,10 @@ public class Product extends BaseEntity
         {
             this.productName = requestDto.getProductName();
         }
+        if (requestDto.getProductDescription() != null && !requestDto.getProductDescription().isBlank())
+        {
+            this.productDescription = requestDto.getProductDescription();
+        }
         if (requestDto.getProductPrice() != null)
         {
             this.productPrice = requestDto.getProductPrice();
@@ -78,26 +76,18 @@ public class Product extends BaseEntity
         {
             this.productCategory = requestDto.getProductCategory();
         }
-        if (requestDto.getProductColorOptionList() != null && !requestDto.getProductColorOptionList().isEmpty())
-        {
-            this.productColorOptionList = requestDto.getProductColorOptionList();
-        }
-        if (requestDto.getProductSizeOptionList() != null && !requestDto.getProductSizeOptionList().isEmpty())
-        {
-            this.productSizeOptionList = requestDto.getProductSizeOptionList();
-        }
         if (requestDto.getProductDetailEditor() != null && !requestDto.getProductDetailEditor().isBlank())
         {
             this.productDetail = requestDto.getProductDetailEditor();
         }
-        if (requestDto.getIsExposure() != null)
+        if (requestDto.getIsVisible() != null)
         {
-            this.isExposure = requestDto.getIsExposure();
+            this.isVisible = requestDto.getIsVisible();
         }
     }
 
-    public void changeExposure(Boolean isExposure)
+    public void changeVisible(Boolean isVisible)
     {
-        this.isExposure = isExposure;
+        this.isVisible = isVisible;
     }
 }

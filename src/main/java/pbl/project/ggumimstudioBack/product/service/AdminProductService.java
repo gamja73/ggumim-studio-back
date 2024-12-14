@@ -8,8 +8,8 @@ import pbl.project.ggumimstudioBack.common.dto.response.PaginationResponse;
 import pbl.project.ggumimstudioBack.common.error.CustomErrorCode;
 import pbl.project.ggumimstudioBack.common.error.CustomException;
 import pbl.project.ggumimstudioBack.product.dto.request.CreateProductRequestDto;
-import pbl.project.ggumimstudioBack.product.dto.request.UpdateExposureRequestDto;
 import pbl.project.ggumimstudioBack.product.dto.request.UpdateProductRequestDto;
+import pbl.project.ggumimstudioBack.product.dto.request.UpdateVisibleRequestDto;
 import pbl.project.ggumimstudioBack.product.dto.response.AdminProductDetailResponseDto;
 import pbl.project.ggumimstudioBack.product.dto.response.AdminProductListResponseDto;
 import pbl.project.ggumimstudioBack.product.entity.Product;
@@ -39,12 +39,12 @@ public class AdminProductService
     }
 
     @Transactional
-    public String updateProductExposure(UpdateExposureRequestDto requestDto)
+    public String updateProductVisible(UpdateVisibleRequestDto requestDto)
     {
         Product target = productRepository.findById(requestDto.getProductUID())
                 .orElseThrow(() -> new CustomException(CustomErrorCode.PRODUCT_NOT_FOUND));
 
-        target.changeExposure(requestDto.getIsExposure());
+        target.changeVisible(requestDto.getIsVisible());
 
         return "노출 상태 변경이 완료되었습니다.";
     }

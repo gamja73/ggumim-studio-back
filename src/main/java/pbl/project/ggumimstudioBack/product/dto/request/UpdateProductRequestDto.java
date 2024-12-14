@@ -11,10 +11,9 @@ public class UpdateProductRequestDto
     private Long productUID;
     private String productMainImg;
     private String productName;
+    private String productDescription;
     private BigDecimal productPrice;
     private String productCategory;
-    private List<String> productColorOptionList;
-    private List<String> productSizeOptionList;
     private String productDetailEditor;
-    private Boolean isExposure;
+    private Boolean isVisible;
 }

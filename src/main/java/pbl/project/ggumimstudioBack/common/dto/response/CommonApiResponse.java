@@ -29,4 +29,10 @@ public class CommonApiResponse<T>
     {
         return new CommonApiResponse<>(false, Integer.parseInt(error.getCode()), (T) error.getMessage());
     }
+
+    // 오류 응답
+    public static CommonApiResponse<String> ERR(Integer errorCode, String errorMessage)
+    {
+        return new CommonApiResponse<>(false, errorCode, errorMessage);
+    }
 }
