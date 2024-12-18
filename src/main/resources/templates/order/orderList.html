@@ -1,0 +1,72 @@
+<th:block th:replace="~{/common/commonHead}"></th:block>
+<th:block th:replace="~{/common/commonHeader}"></th:block>
+<!-- main content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">상품 목록</h1>
+    <p class="mb-4"></p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>주문 ID</th>
+                            <th>회원 ID</th>
+                            <th>주문금액</th>
+                            <th>주문상태</th>
+                            <th>주문일시</th>
+                            <th>상세</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="item : ${pageData.getItemList()}" th:orderUID="${item.getOrderUID()}">
+                            <td th:text="${item.getOrderUID()}"></td>
+                            <td th:text="${item.getOrderId()}"></td>
+                            <td th:text="${item.getUserId()}"></td>
+                            <td th:text="${item.getPaymentAmount()}"></td>
+                            <td th:text="${item.getOrderStatus().getOrderStatusText()}"></td>
+                            <td th:text="${item.getCreatedAt()}"></td>
+                            <td>
+                                <button class="btn btn-dark" onclick="moveDetailPage(this)">상세</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="btn-group d-flex align-items-center justify-content-center pb-50" role="group" aria-label="Basic outlined example">
+                    <!-- Previous Page Link -->
+                    <a th:class="'btn btn-success border-0 pagination' + (${currentPage > 1 ? '' : ' disabled'})"
+                       th:if="${currentPage > 1}"
+                       th:href="${pageUrl} + '?page=' + ${currentPage - 1} + '&limit=' + ${limit} + ${searchType != null ? '&searchType=' + searchType : ''} + ${searchValue != null ? '&searchValue=' + searchValue : ''} + '&startAt=' + ${startAt != null ? startAt : ''} + '&endAt=' + ${endAt != null ? endAt : ''}">
+                        &lt;
+                    </a>
+                    <span th:each="pageNumber : ${#numbers.sequence((paginationLimit * (currentGroupPage - 1)) + 1, ((paginationLimit * currentGroupPage) < totalPages ? (paginationLimit * currentGroupPage) : totalPages) + 1)}" th:if="${pageNumber <= totalPages}">
+                          <a th:class="'btn btn-success' + (${pageNumber == currentPage ? ' active' : ''})"
+                             th:href="${pageUrl} + '?page=' + ${pageNumber} + '&limit=' + ${limit} + ${searchType != null ? '&searchType=' + searchType : ''} + ${searchValue != null ? '&searchValue=' + searchValue : ''} + '&startAt=' + ${startAt != null ? startAt : ''} + '&endAt=' + ${endAt != null ? endAt : ''}">
+                              [[${pageNumber}]]
+                          </a>
+                      </span>
+                    <!-- Next Page Link -->
+                    <a th:class="'btn btn-success border-0 pagination' + (${currentPage < totalPages ? '' : ' disabled'})"
+                       th:if="${currentPage < totalPages}"
+                       th:href="${pageUrl} + '?page=' + ${currentPage + 1} + '&limit=' + ${limit} + ${searchType != null ? '&searchType=' + searchType : ''} + ${searchValue != null ? '&searchValue=' + searchValue : ''} + '&startAt=' + ${startAt != null ? startAt : ''} + '&endAt=' + ${endAt != null ? endAt : ''}">
+                        &gt;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+<th:block th:replace="~{/common/commonFooter}"></th:block>
+<script>
+    const moveDetailPage = (element) => {
+        window.location.href = "/admin/order/" + element.closest("tr").attributes.orderUID.value;
+    }
+</script>
+<th:block th:replace="~{/common/commonFoot}"></th:block>

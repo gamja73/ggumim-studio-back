@@ -2,10 +2,8 @@ package pbl.project.ggumimstudioBack.order.dto.response;
 
 import lombok.Data;
 import pbl.project.ggumimstudioBack.common.util.CommonUtil;
-import pbl.project.ggumimstudioBack.order.entity.Order;
 import pbl.project.ggumimstudioBack.order.entity.OrderItem;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Data

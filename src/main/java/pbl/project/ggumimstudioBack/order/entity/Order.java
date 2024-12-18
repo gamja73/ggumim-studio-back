@@ -45,4 +45,13 @@ public class Order extends BaseEntity
     @Column(name = "delivery_completed_at")
     private LocalDateTime deliveryCompletedAt;
 
+    public void updateStatus(OrderStatus status)
+    {
+        this.orderStatus = status;
+
+        if (OrderStatus.DELIVERED.equals(this.orderStatus))
+        {
+            this.deliveryCompletedAt = LocalDateTime.now();
+        }
+    }
 }

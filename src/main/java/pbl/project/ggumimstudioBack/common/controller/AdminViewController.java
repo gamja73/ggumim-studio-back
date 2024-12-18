@@ -1,17 +1,32 @@
 package pbl.project.ggumimstudioBack.common.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import pbl.project.ggumimstudioBack.common.AdminService;
+import pbl.project.ggumimstudioBack.common.dto.response.AdminDashBoardResponseDto;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminViewController
 {
-    @GetMapping("")
-    public String dashboard()
+
+    private final AdminService adminService;
+
+    public AdminViewController(AdminService adminService)
     {
-        return "index";
+        this.adminService = adminService;
+    }
+
+    @GetMapping("")
+    public String dashboard(Model model)
+    {
+        AdminDashBoardResponseDto pageData = adminService.getDashBoardData();
+
+        model.addAttribute("pageData", pageData);
+
+        return "dashBoard";
     }
 
     @GetMapping("/login")

@@ -1,4 +1,4 @@
-package pbl.project.ggumimstudioBack.order.repository;
+package pbl.project.ggumimstudioBack.order.dto.response;
 
 import lombok.Data;
 
@@ -28,13 +28,15 @@ public class PaymentResultResponseDto
     private String receiptUrl;
 
     @Data
-    public static class Method {
+    public static class Method
+    {
         private String type;
         private String provider;
         private EasyPayMethod easyPayMethod;
 
         @Data
-        public static class EasyPayMethod {
+        public static class EasyPayMethod
+        {
             private String type;
             private Card card;
             private String approvalNumber;
@@ -42,7 +44,8 @@ public class PaymentResultResponseDto
             private boolean pointUsed;
 
             @Data
-            public static class Card {
+            public static class Card
+            {
                 private String publisher;
                 private String issuer;
                 private String brand;
@@ -54,7 +57,8 @@ public class PaymentResultResponseDto
             }
 
             @Data
-            public static class Installment {
+            public static class Installment
+            {
                 private int month;
                 private boolean isInterestFree;
             }
@@ -62,7 +66,8 @@ public class PaymentResultResponseDto
     }
 
     @Data
-    public static class Channel {
+    public static class Channel
+    {
         private String type;
         private String id;
         private String key;
@@ -72,7 +77,8 @@ public class PaymentResultResponseDto
     }
 
     @Data
-    public static class Amount {
+    public static class Amount
+    {
         private int total;
         private int taxFree;
         private int vat;
@@ -84,7 +90,8 @@ public class PaymentResultResponseDto
     }
 
     @Data
-    public static class Customer {
+    public static class Customer
+    {
         private String id;
     }
 }

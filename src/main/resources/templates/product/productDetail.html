@@ -98,22 +98,6 @@
         })
     });
 
-    const deleteOption = (element) => {
-        element.closest('div.option').remove();
-    }
-
-    const getOptionList = (listElement) => {
-        const list = listElement.querySelectorAll(".option");
-
-        const returnList = [];
-
-        list.forEach(item => {
-            returnList.push(item.innerText.substring(0, item.innerText.length-2));
-        })
-
-        return returnList;
-    }
-
     const updateProduct = async () => {
         const productUID = document.getElementById("productUID").attributes.productUID.value;
         const productMainImgInput = document.getElementById("productMainImgInput");

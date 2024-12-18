@@ -1,0 +1,131 @@
+<th:block th:replace="~{/common/commonHead}"></th:block>
+<th:block th:replace="~{/common/commonHeader}"></th:block>
+<!-- main content -->
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">주문 상세</h1>
+    <div id="orderUID" th:orderUID="${pageData.orderUID}" style="display: none"></div>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <tr>
+                        <th>No</th>
+                        <td th:text="${pageData.getOrderUID()}"></td>
+                    </tr>
+                    <tr>
+                        <th>주문 ID</th>
+                        <td th:text="${pageData.getOrderId()}"></td>
+                    </tr>
+                    <tr>
+                        <th>주문 금액</th>
+                        <td th:text="${pageData.getPaymentAmount()} + '원'"></td>
+                    </tr>
+                    <tr>
+                        <th>주문 상태</th>
+                        <td>
+                            <div class="d-flex" style="gap: 20px;">
+                                <select class="form-control" id="orderStatus" th:orderStatus="${pageData.getOrderStatus().name()}">
+                                    <option th:each="status : ${orderStatus}"
+                                            th:text="${status.getOrderStatusText()}"
+                                            th:value="${status.name()}"
+                                            th:selected="${pageData.getOrderStatus().name() == status.name}">
+                                    </option>
+                                </select>
+                                <button class="btn btn-primary" style="width: 200px;" onclick="updateOrderStatus()">상태 변경</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>주문 일시</th>
+                        <td th:text="${pageData.getCreatedAt()}"></td>
+                    </tr>
+                    <th:block th:if="${pageData.getPaymentResponse() != null}">
+                        <tr>
+                            <th>결제 상태</th>
+                            <td th:text="${pageData.getPaymentResponse().getStatus()}"></td>
+                        </tr>
+                        <tr>
+                            <th>결제 방식</th>
+                            <td th:text="${pageData.getPaymentResponse().getMethod().getProvider()}"></td>
+                        </tr>
+                        <tr>
+                            <th>결제 금액</th>
+                            <td th:text="${pageData.getPaymentResponse().getAmount().getTotal()} + '원'"></td>
+                        </tr>
+                    </th:block>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">주문 상품 목록</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <colgroup>
+                        <col style="width: 20%;">
+                        <col style="width: 40%;">
+                        <col style="width: 30%;">
+                        <col style="width: 10%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>상품 이미지</th>
+                        <th>상품명</th>
+                        <th>가격</th>
+                        <th>개수</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="orderItem : ${pageData.getOrderItemList()}">
+                        <td>
+                            <div class="d-flex" style="width: 200px; justify-content: center;">
+                                <img th:src="${orderItem.getProductMainImg()}" style="width: 200px; object-fit: cover;">
+                            </div>
+                        </td>
+                        <td th:text="${orderItem.getProductName()}"></td>
+                        <td th:text="${orderItem.getProductPrice()}"></td>
+                        <td th:text="${orderItem.getQuantity()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+<th:block th:replace="~{/common/commonFooter}"></th:block>
+<script>
+    const updateOrderStatus = async () => {
+        const orderUID = document.getElementById("orderUID").getAttribute("orderUID");
+        const orderStatusSelect = document.getElementById("orderStatus");
+
+        if (orderStatusSelect.getAttribute("orderStatus") === orderStatusSelect.value)
+        {
+            alert("현재 상태와 같습니다.");
+            return;
+        }
+
+        await apiRequest(
+            HttpMethod.PUT,
+            API_URL + "/admin/order/status",
+            {
+                orderUID: orderUID,
+                status: orderStatusSelect.value,
+            },
+            (res) => {
+                alert(res);
+                window.location.reload();
+            },
+            (err) => {
+                alert(err);
+            }
+        )
+    }
+</script>
+<th:block th:replace="~{/common/commonFoot}"></th:block>

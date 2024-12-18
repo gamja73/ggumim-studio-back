@@ -1,10 +1,7 @@
 package pbl.project.ggumimstudioBack.order.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 import pbl.project.ggumimstudioBack.common.entity.BaseEntity;
 
@@ -29,11 +26,12 @@ public class Payment extends BaseEntity
     @Column(name = "is_payment")
     private Boolean isPayment;
 
-    @Comment("결제 데이터")
+    @Comment("결제 요청 데이터")
     @Column(name = "payment_request_data", columnDefinition = "TEXT")
     private String paymentRequestData;
 
-    @Comment("결제 데이터")
+    @Setter
+    @Comment("결제 완료 데이터")
     @Column(name = "payment_response_data", columnDefinition = "TEXT")
     private String paymentResponseData;
 
@@ -42,5 +40,11 @@ public class Payment extends BaseEntity
         this.paymentId = paymentId;
         this.paymentRequestData = requestData;
         this.isPayment = false;
+    }
+
+    public void paymentComplete(String paymentResponseData)
+    {
+        this.isPayment = true;
+        this.paymentResponseData = paymentResponseData;
     }
 }

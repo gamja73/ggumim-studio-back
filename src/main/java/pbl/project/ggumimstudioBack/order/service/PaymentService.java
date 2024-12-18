@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import pbl.project.ggumimstudioBack.common.error.CustomErrorCode;
 import pbl.project.ggumimstudioBack.common.error.CustomException;
+import pbl.project.ggumimstudioBack.order.constants.OrderStatus;
 import pbl.project.ggumimstudioBack.order.dto.response.PaymentResponseDto;
 import pbl.project.ggumimstudioBack.order.entity.Order;
 import pbl.project.ggumimstudioBack.order.entity.OrderItem;
@@ -16,7 +17,7 @@ import pbl.project.ggumimstudioBack.order.entity.Payment;
 import pbl.project.ggumimstudioBack.order.repository.OrderItemRepository;
 import pbl.project.ggumimstudioBack.order.repository.OrderRepository;
 import pbl.project.ggumimstudioBack.order.repository.PaymentRepository;
-import pbl.project.ggumimstudioBack.order.repository.PaymentResultResponseDto;
+import pbl.project.ggumimstudioBack.order.dto.response.PaymentResultResponseDto;
 
 import java.util.List;
 import java.util.Map;
@@ -90,8 +91,16 @@ public class PaymentService
         return totalPrice;
     }
 
+    @Transactional
     public boolean paymentComplete(String paymentID)
     {
+        Payment payment = paymentRepository.findByPaymentId(paymentID)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.ORDER_NOT_FOUND));
+
+        Order order = orderRepository.findByPayment(payment)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.ORDER_NOT_FOUND));
+
+
         WebClient webClient = webClientBuilder.baseUrl("https://api.portone.io").build();
 
         Map<String, String> map = Map.of("paymentId", paymentID);
@@ -112,6 +121,8 @@ public class PaymentService
         try
         {
             result = objectMapper.readValue(response, PaymentResultResponseDto.class);
+            payment.paymentComplete(response);
+            order.updateStatus(OrderStatus.PAYMENT_COMPLETED);
 
             if (result.getStatus().equals("PAID"))
             {
@@ -119,7 +130,8 @@ public class PaymentService
             }
         }
         catch (JsonProcessingException e)
-        {}
+        {
+        }
 
         return false;
     }
